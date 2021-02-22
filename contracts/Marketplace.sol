@@ -16,4 +16,18 @@ contract Marketplace {
     constructor() public {
         name = "DApp Marketplace";
     }
+
+    function createProduct(string memory _name, uint256 _price) public {
+        require(bytes1(_name).length > 0);
+        require(_price > 0);
+
+        products[productCount] = Product(
+            productCount,
+            _name,
+            _price,
+            msg.sender,
+            false
+        );
+        productCount++;
+    }
 }
