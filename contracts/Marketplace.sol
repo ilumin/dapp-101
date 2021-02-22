@@ -2,21 +2,21 @@ pragma solidity ^0.5.0;
 
 contract Marketplace {
     string public name;
-    mapping(uint256 => Product) public products;
-    uint256 public productCount = 0;
+    mapping(uint => Product) public products;
+    uint public productCount = 0;
 
     struct Product {
-        uint256 id;
+        uint id;
         string name;
-        uint256 price;
+        uint price;
         address payable owner;
         bool purchased;
     }
 
     event ProductCreated(
-        uint256 id,
+        uint id,
         string name,
-        uint256 price,
+        uint price,
         address payable owner,
         bool purchased
     );
@@ -33,7 +33,7 @@ contract Marketplace {
         name = "DApp Marketplace";
     }
 
-    function createProduct(string memory _name, uint256 _price) public {
+    function createProduct(string memory _name, uint _price) public {
         require(bytes(_name).length > 0, "Product name cannot be blank");
         require(_price > 0, "Price should be greater than zero");
 
@@ -52,15 +52,17 @@ contract Marketplace {
         Product memory _product = products[_id];
         address payable _seller = _product.owner;
 
-        require(_product.id > 0 && _product.id <= productCount, "Invalid product");
-        require(msg.value >= _product.price, "Invalid price");
+        require(_product.id >= 0 && _product.id <= productCount, "Invalid product id");
+        require(msg.value >= _product.price, "Invalid product price");
         require(!_product.purchased, "Product already purchased");
         require(_seller != msg.sender, "Buyer is not sender");
 
         _product.owner = msg.sender;
         _product.purchased = true;
         products[_id] = _product;
+
         address(_seller).transfer(msg.value);
-        emit ProductPurchased(productCount, _product.name, _product.price, msg.sender, true);
+
+        emit ProductPurchased(_id, _product.name, msg.value, msg.sender, true);
     }
 }
