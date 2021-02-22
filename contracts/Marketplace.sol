@@ -26,7 +26,7 @@ contract Marketplace {
     }
 
     function createProduct(string memory _name, uint256 _price) public {
-        require(bytes1(_name).length > 0);
+        require(bytes(_name).length > 0);
         require(_price > 0);
 
         products[productCount] = Product(
