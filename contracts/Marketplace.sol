@@ -13,6 +13,14 @@ contract Marketplace {
         bool purchased;
     }
 
+    event ProductCreated(
+        uint256 id,
+        string name,
+        uint256 price,
+        address owner,
+        bool purchased
+    );
+
     constructor() public {
         name = "DApp Marketplace";
     }
@@ -28,6 +36,7 @@ contract Marketplace {
             msg.sender,
             false
         );
+        emit ProductCreated(productCount, _name, _price, msg.sender, false);
         productCount++;
     }
 }
